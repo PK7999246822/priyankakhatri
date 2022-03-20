@@ -46,7 +46,7 @@ const loginAuthor = async function (req, res) {
     if (!author)
       return res.status(404).send({
         status: false,
-        msg: "username or the password is not corerct",
+        msg: "user not found",
       });
 
     let token = jwt.sign({ authorId: author._id.toString() }, "secuiretyKeyToCheckToken");

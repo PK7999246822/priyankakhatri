@@ -3,15 +3,15 @@ const mongoose = require('mongoose');
 const authorSchema = new mongoose.Schema( {
     fname: {
         type : String ,
-        required : true 
+        required : "Please enter first name"
     },
     lname: {
         type : String ,
-        required : true 
+        required : "Please enter last name"
     },
     title : {
         type : String ,
-        required : true ,
+        required : "Please enter title" ,
         enum : [ "Mr" , "Mrs" , "Miss"]
     },
     email: {
@@ -19,12 +19,12 @@ const authorSchema = new mongoose.Schema( {
         trim: true,
         lowercase: true,
         unique: true,
-        required: true,
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+        required: "Please enter email",
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email address']
     },
     password : {
         type : String ,
-        required : true 
+        required : "Please enter password" 
     }
  } , { timestamps: true });
 

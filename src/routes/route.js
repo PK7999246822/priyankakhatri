@@ -4,12 +4,6 @@ const authorController = require("../controllers/authorController")
 const blogController = require("../controllers/blogController")
 const mw = require("../middleware/auth-middleware")
 
-router.get("/test-me", function (req, res) {
-    res.send("My first ever api!")
-})
-
-// Phase - 1
-
 // create author
 router.post("/createAuthor", authorController.createAuthor)
 

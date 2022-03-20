@@ -3,16 +3,16 @@ const blogModel = require("../models/blogModel")
 
 const authentication = function (req, res, next) {
     try {
-        let isToken = req.headers["x-api-key"]
-        if (!isToken) {
+        let token = req.headers["x-api-key"]
+        if (!token) {
             return res.status(400).send({ status: false, msg: "token must be present" });
         }
-
-        let decodedToken = jwt.verify(isToken, "secuiretyKeyToCheckToken");
+        let decodedToken = jwt.verify(token, "secuiretyKeyToCheckToken");
+        
         if (!decodedToken) {
             return res.status(401).send({ status: false, msg: "token is invalid" });
         }
- //       req.decodedToken=decodedToken.authorId
+        console.log("token",decodedToken)
         next();
     }
     catch (err) {
@@ -37,7 +37,6 @@ const authorization = async function (req, res, next) {
 
             if (decodedtoken.authorId != authorId) return res.status(403).send({ status: false, msg: "You haven't right to perform this task" })
         }
-
         else {
             let authorId = req.query.authorId
             if ( !authorId )  return res.status(400).send({error : "Please, enter authorId or blogId"})
