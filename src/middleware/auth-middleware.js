@@ -12,7 +12,6 @@ const authentication = function (req, res, next) {
         if (!decodedToken) {
             return res.status(401).send({ status: false, msg: "token is invalid" });
         }
-        console.log("token",decodedToken)
         next();
     }
     catch (err) {
@@ -29,9 +28,7 @@ const authorization = async function (req, res, next) {
         let decodedtoken = jwt.verify(token, "secuiretyKeyToCheckToken")
 
         let blogId = req.params.blogId
-        if (!blogId) blogId = req.query._id
-
-        if (blogId) {
+        if ( blogId ) {
             let authorId = await blogModel.find({ _id: blogId }).select({ authorId: 1, _id: 0 })
             authorId = authorId.map(x => x.authorId)
 
@@ -39,7 +36,7 @@ const authorization = async function (req, res, next) {
         }
         else {
             let authorId = req.query.authorId
-            if ( !authorId )  return res.status(400).send({error : "Please, enter authorId or blogId"})
+            if ( !authorId )  return res.status(400).send({error : "Please, enter authorId"})
             if (decodedtoken.authorId != authorId) return res.status(403).send({ status: false, msg: "You haven't right to perform this task" })
         }
         next()
