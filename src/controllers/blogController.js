@@ -2,13 +2,13 @@ const { count } = require("console")
 const blogModel = require("../models/blogModel")
 const authorModel = require("../models/authorModel")
 
-const isValid = function (value) {
-    if (typeof (value) === 'undefined' || typeof (value) === 'null') {
+const isValid= function(value){
+    if( typeof (value)=== 'undefined' || typeof (value)=== 'null'){
         return false
-    }
-    if (value.trim().length == 0) {
+    } 
+    if(value.trim().length==0){
         return false
-    } if (typeof (value) === 'string' && value.trim().length > 0) {
+    } if(typeof (value) === 'string' && value.trim().length >0 ){
         return true
     }
 }
@@ -16,7 +16,17 @@ const isValid = function (value) {
 const createBlog = async function (req, res) {
     try {
         const data = req.body
-        const a_Id = req.body.authorId
+        const authorId = req.body.authorId
+
+        if (!Object.keys(data).length > 0) return res.status(400).send({ error: "Please enter data" })
+
+        // checking , if any authorId has no value
+        if (!isValid(authorId)) return res.status(400).send({ status: false, msg: 'please provide authorId' })
+        if (!isValid(data.tags)) return res.status(400).send({ status: false, msg: 'please provide tags' })
+        if (!isValid(data.category)) return res.status(400).send({ status: false, msg: 'please provide category' })
+        if (!isValid(data.subcategory)) return res.status(400).send({ status: false, msg: 'please provide subcategory' })
+        if (!isValid(data.title)) return res.status(400).send({ status: false, msg: 'please provide title' })
+        if (!isValid(data.body)) return res.status(400).send({ status: false, msg: 'please provide body' })
 
         // setting default values
         if (data.isDeleted != null) data.isDeleted = false
@@ -24,14 +34,8 @@ const createBlog = async function (req, res) {
         if (data.deletedAt != null) data.deletedAt = ""
         if (data.publishedAt != null) data.publishedAt = ""
 
-        if (!Object.keys(data).length > 0) return res.status(400).send({ error: "Please enter data" })
-
-        // checking , if any authorId has no value
-        const { authorId } = data
-        if (!isValid(a_Id)) return res.status(400).send({ status: false, msg: 'please provide authorId' })
-
         // checking if authorId is valid or not
-        const findAuthor = await authorModel.find({ _id: a_Id })
+        const findAuthor = await authorModel.find({ _id: authorId })
         if (!findAuthor.length > 0) return res.status(400).send("error : Please enter valid authorId")
 
         // creating blog
@@ -87,7 +91,7 @@ const updateBlog = async function (req, res) {
 
         //  blogId is valid or not.
         let blog = await blogModel.findById(blogId)
-        if (!blog) return res.status(400).send({ status: false, msg: "Blog does not exists" })
+        if (!blog) return res.status(404).send({ status: false, msg: "Blog does not exists" })
 
         // checking if blog is already deleted
         if (blog.isDeleted == true) return res.status(400).send({ error: "Already deleted" })
