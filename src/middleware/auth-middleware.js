@@ -4,19 +4,35 @@ const blogModel = require("../models/blogModel")
 const authentication = function (req, res, next) {
     try {
         let token = req.headers["x-api-key"]
-        if (!token) {
+        if (token) {
+            let decodedToken = jwt.verify(token, "secuiretyKeyToCheckToken");
+             
+        if ( decodedToken ) {  
+            req["x-api-key"] = decodedToken
+            next()
+        }        
+        else {
+            return  res.status(401).send({error : "Invalid Token"})
+        }
+
+        }
+        else {
             return res.status(400).send({ status: false, msg: "token must be present" });
         }
-        let decodedToken = jwt.verify(token, "secuiretyKeyToCheckToken");
+  //      return res.status(400).send({ status: false, msg: "token must be present" });
+ //       let decodedToken = jwt.verify(token, "secuiretyKeyToCheckToken");
         
-        if (!decodedToken) {
-            return res.status(401).send({ status: false, msg: "token is invalid" });
-        }
-        next();
-    }
+    //     if ( decodedToken ) {  
+    //         req["x-api-key"] = decodedToken
+    //         next()
+    //     }        
+    //     else {
+    //         return  res.status(401).send({error : "Invalid Token"})
+    //     }
+     }
     catch (err) {
         console.log(err)
-        res.status(500).send({ msg: err.message })
+        return res.status(500).send({ msg: err.message })
     }
 
 }
