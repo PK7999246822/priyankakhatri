@@ -51,12 +51,14 @@ const loginAuthor = async function (req, res) {
 
     let author = await authorModel.findOne({ email: email, password: password });
     if (!author)
-      return res.status(404).send({
+      return res.status(400).send({
         status: false,
-        msg: "user not found",
+        msg: "email or password is incorrect",
     });
 
-    let token = jwt.sign({ authorId: author._id.toString() }, "secuiretyKeyToCheckToken");
+    let token = jwt.sign({ authorId: author._id.toString() },
+                           "secuiretyKeyToCheckToken" ,
+                           { expiresIn: "10h"} );
     res.setHeader("x-api-key", token);
     res.status(200).send({ status: "Author log-in successfully", data: token });
   }

@@ -17,16 +17,22 @@ const createBlog = async function (req, res) {
     try {
         const data = req.body
         const authorId = req.body.authorId
+        const title = req.body.title
+        const body = req.body.body
+        const category = req.body.category
+        const subcategory = req.body.subcategory
+        const tags = req.body.tags
+
 
         if (!Object.keys(data).length > 0) return res.status(400).send({ error: "Please enter data" })
 
         // checking , if any authorId has no value
         if (!isValid(authorId)) return res.status(400).send({ status: false, msg: 'please provide authorId' })
-        if (!isValid(data.tags)) return res.status(400).send({ status: false, msg: 'please provide tags' })
-        if (!isValid(data.category)) return res.status(400).send({ status: false, msg: 'please provide category' })
-        if (!isValid(data.subcategory)) return res.status(400).send({ status: false, msg: 'please provide subcategory' })
-        if (!isValid(data.title)) return res.status(400).send({ status: false, msg: 'please provide title' })
-        if (!isValid(data.body)) return res.status(400).send({ status: false, msg: 'please provide body' })
+        if (!isValid(title)) return res.status(400).send({ status: false, msg: 'please provide title' })
+        if (!isValid(category)) return res.status(400).send({ status: false, msg: 'please provide category' })
+        if (!isValid(subcategory)) return res.status(400).send({ status: false, msg: 'please provide subcategory' })
+        if (!isValid(tags)) return res.status(400).send({ status: false, msg: 'please provide tags' })
+        if (!isValid(body)) return res.status(400).send({ status: false, msg: 'please provide body' })
 
         // setting default values
         if (data.isDeleted != null) data.isDeleted = false
@@ -71,7 +77,7 @@ const getAllBlogs = async function (req, res) {
 
         // Searching if blog exist 
         const blogs = await blogModel.find({ ...filter, isDeleted: false, isPublished: true }).populate("authorId")
-        if (!blogs) return res.status(404).send({ error: "No such data found" })
+        if (!blogs.length > 0) return res.status(404).send({ error: "No blog found with these filters " })
 
         res.status(200).send({ data: blogs })
     }
