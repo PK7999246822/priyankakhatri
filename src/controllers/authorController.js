@@ -24,6 +24,14 @@ const createAuthor = async function (req, res) {
     if( !isValid(data.lname) )    return res.status(400).send({ status : false, msg: 'please provide last Name'})    
     if( !isValid(data.title) )    return res.status(400).send({ status : false, msg: 'please provide title'})    
  
+    // validation : if any key has invalid value
+    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
+      return res.status(400).send({ status: false, message: 'please provide valid email' })
+  }
+    if ( !(data.title == "Mr" || data.title == "Miss" || data.title == "Mrs")){
+      return res.status(400).send({ status: false, message: 'please provide valid title ( Mr , Mrs or Miss)' })
+    }
+
     const createdauthor = await authorModel.create(data)
     res.status(201).send({ data: createdauthor })
   }

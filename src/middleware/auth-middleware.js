@@ -1,42 +1,20 @@
 const jwt = require("jsonwebtoken")
 const blogModel = require("../models/blogModel")
 
-const authentication = function (req, res, next) {
-    try {
-        let token = req.headers["x-api-key"]
-        if (token) {
-            let decodedToken = jwt.verify(token, "secuiretyKeyToCheckToken");
-             
-        if ( decodedToken ) {  
-            req["x-api-key"] = decodedToken
-            next()
-        }        
-        else {
-            return  res.status(401).send({error : "Invalid Token"})
-        }
-
-        }
-        else {
-            return res.status(400).send({ status: false, msg: "token must be present" });
-        }
-  //      return res.status(400).send({ status: false, msg: "token must be present" });
- //       let decodedToken = jwt.verify(token, "secuiretyKeyToCheckToken");
-        
-    //     if ( decodedToken ) {  
-    //         req["x-api-key"] = decodedToken
-    //         next()
-    //     }        
-    //     else {
-    //         return  res.status(401).send({error : "Invalid Token"})
-    //     }
-     }
-    catch (err) {
-        console.log(err)
-        return res.status(500).send({ msg: err.message })
+const authentication = async function ( req , res , next ) {
+    let isToken = req.headers["x-auth-token"]
+    if ( !isToken ) {
+        res.send({ status: false, msg: "token must be present" });
+    }
+ 
+    let decodedToken = jwt.verify(isToken, "secuiretyKeyToCheckToken");
+    if ( !decodedToken ) {
+        res.send({ status: false, msg: "token is invalid" });
     }
 
-}
+    next();
 
+}
 
 const authorization = async function (req, res, next) {
     try {
