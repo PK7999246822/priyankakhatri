@@ -39,6 +39,11 @@ const createBlog = async function (req, res) {
         if (data.isPublished != null) data.isPublished = false
         if (data.deletedAt != null) data.deletedAt = ""
         if (data.publishedAt != null) data.publishedAt = ""
+        
+        // checking if authorId is valid or not
+        if (!(/^[0-9a-fA-F]{24}$/.test(data.authorId))) {
+            return res.status(400).send({ status: false, message: 'please provide valid authorId' })
+        }
 
         // checking if authorId is valid or not
         const findAuthor = await authorModel.find({ _id: authorId })
