@@ -16,6 +16,7 @@ const createAuthor = async function (req, res) {
   try {
     const data = req.body
     if (!Object.keys(data).length > 0) return res.status(400).send({ error: "Please enter data" })
+    let {email} = data
 
     //  checking if any data field is empty or has no value
     if( !isValid(data.password) )    return res.status(400).send({ status : false, msg: 'please provide password'})
@@ -24,10 +25,15 @@ const createAuthor = async function (req, res) {
     if( !isValid(data.lname) )    return res.status(400).send({ status : false, msg: 'please provide last Name'})    
     if( !isValid(data.title) )    return res.status(400).send({ status : false, msg: 'please provide title'})    
  
-    // validation : if any key has invalid value
+    // validation : email
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email))) {
       return res.status(400).send({ status: false, message: 'please provide valid email' })
   }
+  email = await authorModel.findOne({ email })
+  if (email) return res.status(400).send({ status: false, message: "This eamil is already in use,please provide another email" })
+
+
+  //  validation : title
     if ( !(data.title == "Mr" || data.title == "Miss" || data.title == "Mrs")){
       return res.status(400).send({ status: false, message: 'please provide valid title ( Mr , Mrs or Miss)' })
     }
