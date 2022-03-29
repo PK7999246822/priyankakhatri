@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken")
 const blogModel = require("../models/blogModel")
 
 const authentication = async function ( req , res , next ) {
+    try{ 
     let isToken = req.headers["x-auth-token"]
     if ( !isToken ) {
         res.send({ status: false, msg: "token must be present" });
@@ -11,11 +12,13 @@ const authentication = async function ( req , res , next ) {
     if ( !decodedToken ) {
         res.send({ status: false, msg: "token is invalid" });
     }
-
     next();
-
 }
-
+    catch(error){
+        console.log(error)
+        res.status(500).send({ msg: error.message })
+    }
+}
 const authorization = async function (req, res, next) {
     try {
         let token = req.headers["x-api-key"];
