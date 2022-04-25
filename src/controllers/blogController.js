@@ -2,15 +2,10 @@ const { count } = require("console")
 const blogModel = require("../models/blogModel")
 const authorModel = require("../models/authorModel")
 
-const isValid= function(value){
-    if( typeof (value)=== 'undefined' || typeof (value)=== 'null'){
-        return false
-    } 
-    if(value.trim().length==0){
-        return false
-    } if(typeof (value) === 'string' && value.trim().length >0 ){
-        return true
-    }
+const isValid = function (value) {
+    if (typeof value == undefined || value == null || value.length == 0) return false
+    if (typeof value === 'string' && value.trim().length === 0) return false
+    return true
 }
 
 const createBlog = async function (req, res) {
@@ -79,9 +74,10 @@ const getAllBlogs = async function (req, res) {
         if (filter.authorId != undefined) {
             if (!isValid(filter.authorId)) return res.status(400).send({ status: false, msg: 'please provide authorId' })
         }
-
-        // Searching if blog exist 
+        
+// Searching if blog exist 
         const blogs = await blogModel.find({ ...filter, isDeleted: false, isPublished: true }).populate("authorId")
+        console.log(blogs)
         if (!blogs.length > 0) return res.status(404).send({ error: "No blog found with these filters " })
 
         res.status(200).send({ data: blogs })
